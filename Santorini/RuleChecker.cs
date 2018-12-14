@@ -43,9 +43,9 @@ namespace Santorini
             if (!PositionIsPossible(move.BuildLocation.X, move.BuildLocation.Y, 0) ||
                 move.BuildLocation.Equals(move.NewLocation))
                 return false;
-            int defX = move.BuildLocation.X - move.NewLocation.X;
-            int defY = move.BuildLocation.Y - move.NewLocation.Y;
-            if (defX < -1 || defX > 1 || defY < -1 || defY > 1)
+            int difX = move.BuildLocation.X - move.NewLocation.X;
+            int difY = move.BuildLocation.Y - move.NewLocation.Y;
+            if (difX < -1 || difX > 1 || difY < -1 || difY > 1)
                 return false;
             if (board.Buildings[move.BuildLocation.X][move.BuildLocation.Y] == 4)
                 return false;
@@ -73,10 +73,10 @@ namespace Santorini
                 foreach (Figure figure in player.Figuren)
                     if (newPosition.GetLocation().Equals(figure.CurrentPosition.GetLocation()))
                         return false;
-            int defX = oldPosition.X - newPosition.X;
-            int defY = oldPosition.Y - newPosition.Y;
-            int defZ = oldPosition.Z - board.Buildings[newPosition.X][newPosition.Y];
-            return defX >= -1 && defX <= 1 && defY >= -1 && defY <= 1 && defZ >= -1;
+            int difX = oldPosition.X - newPosition.X;
+            int difY = oldPosition.Y - newPosition.Y;
+            int difZ = oldPosition.Z - board.Buildings[newPosition.X][newPosition.Y];
+            return difX >= -1 && difX <= 1 && difY >= -1 && difY <= 1 && difZ >= -1;
         }
 
         public static bool PositionIsPossible(int x, int y, int z)
