@@ -5,7 +5,7 @@ namespace Santorini
     public abstract class Piece
     {
         public Guid Id { get; }
-        public Land CurrentLand { get; protected set; }
+        public Land CurrentLand { get; private set; }
 
         protected Piece()
         {
@@ -13,8 +13,13 @@ namespace Santorini
             CurrentLand = null;
         }
 
+        public bool IsPlaced
+            => CurrentLand != null;
+
         internal void SetLand(Land land)
         {
+            if (land is null) throw new ArgumentNullException(nameof(land));
+
             CurrentLand = land;
         }
     }

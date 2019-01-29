@@ -1,51 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Santorini
 {
+    [DebuggerDisplay("[{Coord.X},{Coord.Y}], IsUnoccupied:{IsUnoccupied}, HasTower:{HasTower}, HasWorker:{HasWorker}")]
     public class Land : IEquatable<Land>
     {
-        public int X { get; }
-        public int Y { get; }
+        public readonly Coord Coord;
 
         private readonly List<Piece> _pieces;
         public Piece[] Pieces => _pieces.ToArray();
 
-        public Board Board { get; }
+        public Island Island { get; }
 
-        internal Land(Board board, int x, int y)
+        internal Land(Island island, int x, int y)
         {
-            if (!Board.IsValidPosition(x, y))
+            if (!Island.IsValidPosition(x, y))
                 throw new ArgumentOutOfRangeException();
 
-            if (board is null)
-                throw new ArgumentNullException(nameof(board));
+            if (island is null)
+                throw new ArgumentNullException(nameof(island));
 
-            Board = board;
-            X = x;
-            Y = y;
+            Island = island;
+            Coord = new Coord(x, y);
             _pieces = new List<Piece>();
-        }
-
-        public bool Equals(Land other)
-        {
-            if (other is null) return false;
-            return X == other.X && Y == other.Y;
         }
 
         public bool TryPutPiece(Piece piece)
         {
-            if (piece is Building && !IsEmpty)
+            if (piece is Tower && (HasTower || HasWorker))
                 return false;
 
-            if (piece is Builder)
+            if (piece is Worker)
             {
-                if (HasBuilder) return false;
+                if (HasWorker) return false;
 
-                var builder = piece as Builder;
+                var worker = piece as Worker;
 
-                if (piece.CurrentLand != null && LandLevel > builder.LandLevel + 1)
+                if (worker.CurrentLand != null && LandLevel > worker.LandLevel + 1)
                     return false;
             }
 
@@ -55,38 +49,65 @@ namespace Santorini
             return true;
         }
 
-        public bool TryRemoveBuilder(Builder builder)
+        public bool TryRemoveWorker(Worker worker)
         {
-            if(!HasBuilder) return false;
+            if(!HasWorker) return false;
 
-            if (!Builder.Equals(builder)) return false;
+            if (!Worker.Equals(worker)) return false;
 
-            _pieces.Remove(Builder as Piece);
+            _pieces.Remove(Worker as Piece);
 
             return true;
         }
+        
+        public bool IsUnoccupied
+            => !HasWorker && !MaxLevelReached;
 
-        public bool IsEmpty
-            => _pieces.Count == 0;
+        public bool HasTower
+            => _pieces.Any(p => p is Tower);
 
-        public bool HasBuilding
-            => _pieces.Any(p => p is Building);
+        public Tower Tower
+            => _pieces.SingleOrDefault(p => p is Tower) as Tower;
 
-        public Building Building
-            => _pieces.SingleOrDefault(p => p is Building) as Building;
+        public bool HasWorker
+            => _pieces.Any(p => p is Worker);
 
-        public bool HasBuilder
-            => _pieces.Any(p => p is Builder);
-
-        public Builder Builder
-            => _pieces.SingleOrDefault(p => p is Builder) as Builder;
+        public Worker Worker
+            => _pieces.SingleOrDefault(p => p is Worker) as Worker;
 
         public int LandLevel
-            => HasBuilding
-            ? Building.Level
+            => HasTower
+            ? Tower.Level
             : 0;
 
         public bool MaxLevelReached
-            => HasBuilding && Building.MaxLevelReached;
+            => HasTower && Tower.IsComplete;
+
+        public bool Equals(Land other)
+        {
+            if (other is null) return false;
+            return Coord.X == other.Coord.X && Coord.Y == other.Coord.Y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null || obj.GetType() != GetType())
+                return false;
+
+            return (obj as Land).Equals(this);
+        }
+
+        public static bool operator ==(Land land1, Land land2)
+        {
+            if (land1 is null && land2 is null) return true;
+            if (land1 is null || land2 is null) return false;
+            return land1.Coord == land2.Coord;
+        }
+
+        public static bool operator !=(Land land1, Land land2)
+            => !(land1 == land2);
+
+        public override int GetHashCode()
+            => Coord.GetHashCode();
     }
 }

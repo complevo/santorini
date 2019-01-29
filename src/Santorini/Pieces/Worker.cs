@@ -2,15 +2,15 @@
 
 namespace Santorini
 {
-    public class Builder : Piece, IEquatable<Builder>
+    public class Worker : Piece, IEquatable<Worker>
     {
         public Player Player { get; }
         public int Number { get; set; }        
 
-        internal Builder(Player player, int number)
+        internal Worker(Player player, int number)
         {
             if (player is null) throw new ArgumentNullException(nameof(player));
-            if (number <= 0) throw new ArgumentOutOfRangeException(nameof(number), "Builder number must be equal or greater than 1");
+            if (number <= 0) throw new ArgumentOutOfRangeException(nameof(number), "Worker number must be equal or greater than 1");
 
             Player = player;
             Number = number;
@@ -20,7 +20,7 @@ namespace Santorini
         {
             if (CanMoveTo(posX, posY, out var land))
             {
-                CurrentLand.TryRemoveBuilder(this);
+                CurrentLand.TryRemoveWorker(this);
                 return land.TryPutPiece(this);
             }
             return false;
@@ -30,22 +30,22 @@ namespace Santorini
         {
             if (CanBuildAt(posX, posY, out var land))
             {
-                if (land.HasBuilding && !land.Building.MaxLevelReached)
+                if (land.HasTower && !land.Tower.IsComplete)
                 {
-                    land.Building.RaiseLevel();
+                    land.Tower.RaiseLevel();
 
                     return true;
                 }
 
-                var newBuilding = new Building();
+                var newBuilding = new Tower();
                 return land.TryPutPiece(newBuilding);
             }
 
             return false;
         }
-         
+
         public int LandLevel
-            => CurrentLand.LandLevel;
+            => CurrentLand?.LandLevel ?? -1;
 
         private bool CanMoveTo(int posX, int posY, out Land land)
         {
@@ -53,7 +53,7 @@ namespace Santorini
 
             if (CurrentLand is null) return false;
 
-            if (CurrentLand.Board.TryGetLand(posX, posY, out land))
+            if (CurrentLand.Island.TryGetLand(posX, posY, out land))
             {
                 var from = CurrentLand;
                 var to = land;
@@ -83,8 +83,8 @@ namespace Santorini
 
         private bool IsMovingMoreThan2StepsAway(Land from, Land to)
         {
-            var posXdiff = Math.Abs(from.X - to.X);
-            var posYdiff = Math.Abs(from.Y - to.Y);
+            var posXdiff = Math.Abs(from.Coord.X - to.Coord.X);
+            var posYdiff = Math.Abs(from.Coord.Y - to.Coord.Y);
 
             if (posXdiff > 1 || posYdiff > 1) return true;
             return false;
@@ -92,16 +92,16 @@ namespace Santorini
 
         private bool IsLandBlocked(Land land)
             => CurrentLand.Equals(land) 
-            || land.HasBuilder 
+            || land.HasWorker 
             || land.MaxLevelReached;
 
         private bool CanBuildAt(int posX, int posY, out Land land)
         {
-            if (CurrentLand.Board.TryGetLand(posX, posY, out land))
+            if (CurrentLand.Island.TryGetLand(posX, posY, out land))
             {
                 if (IsLandBlocked(land)) return false;
 
-                var (posXDiff, posYDiff) = (Math.Abs(CurrentLand.X - land.X), Math.Abs(CurrentLand.Y - land.Y));
+                var (posXDiff, posYDiff) = (Math.Abs(CurrentLand.Coord.X - land.Coord.X), Math.Abs(CurrentLand.Coord.Y - land.Coord.Y));
                 if (posXDiff > 1 || posYDiff > 1) return false;
 
                 return true;
@@ -110,7 +110,7 @@ namespace Santorini
             return false;
         }
                
-        public bool Equals(Builder other)
+        public bool Equals(Worker other)
         {
             if (other is null) return false;
 

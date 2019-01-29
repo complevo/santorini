@@ -31,7 +31,7 @@ namespace Santorini.Tests
         }
 
         [Fact]
-        public void Player_start_with_2_builders()
+        public void Player_start_with_2_workers()
         {
             // arrange
             var playerName = _faker.Name.FirstName();
@@ -42,9 +42,9 @@ namespace Santorini.Tests
             // assert
             player.Should().NotBeNull();
             player.Name.Should().Be(playerName);
-            player.Builders.Should().HaveCount(2);
-            player.Builders.First().Number.Should().Be(1);
-            player.Builders.Last().Number.Should().Be(2);
+            player.Workers.Should().HaveCount(2);
+            player.Workers.First().Number.Should().Be(1);
+            player.Workers.Last().Number.Should().Be(2);
         }
     }
 }

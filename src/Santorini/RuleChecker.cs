@@ -6,7 +6,7 @@
 //    {
 //        public static bool TryMove(Board board, MoveCommand move)
 //        {
-//            var oldPossition = board.GetPlayer(move.PlayerName).Figuren[move.BuilderNumber].CurrentPosition;
+//            var oldPossition = board.GetPlayer(move.PlayerName).Figuren[move.WorkerNumber].CurrentPosition;
 //            var newPosZ = board.Buildings[move.NewLocation.X][move.NewLocation.Y];
 //            var newPosition = new Land(move.NewLocation.X, move.NewLocation.Y, newPosZ);
 
@@ -35,7 +35,7 @@
 //        {
 //            int newPosZ = board.Buildings[move.NewLocation.X][move.NewLocation.Y];
 //            Land position = new Land(move.NewLocation.X, move.NewLocation.Y, newPosZ);
-//            board.GetPlayer(move.PlayerName).Figuren[move.BuilderNumber].ChangePosition(position);
+//            board.GetPlayer(move.PlayerName).Figuren[move.WorkerNumber].ChangePosition(position);
 //            board.Buildings[move.BuildAt.X][move.BuildAt.Y]++;
 //        }
 
@@ -59,10 +59,10 @@
 //                return false;
 //            }
 
-//            Builder currentFigure = board.GetPlayer(move.PlayerName).Figuren[move.BuilderNumber];
+//            Worker currentFigure = board.GetPlayer(move.PlayerName).Figuren[move.WorkerNumber];
 //            foreach (Player player in board.Players)
 //            {
-//                foreach (Builder figure in player.Figuren.Where(f => f != currentFigure))
+//                foreach (Worker figure in player.Figuren.Where(f => f != currentFigure))
 //                {
 //                    if (move.BuildAt.Equals(figure.CurrentPosition.GetLocation()))
 //                    {

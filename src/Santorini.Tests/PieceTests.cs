@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Bogus;
 using FluentAssertions;
@@ -21,12 +22,27 @@ namespace Santorini.Tests
         {
             var player = new Player(_faker.Name.FirstName());
 
-            var piece1 = player.Builders.First() as Piece;
-            var piece2 = player.Builders.Last() as Piece;
+            var piece1 = player.Workers.First() as Piece;
+            var piece2 = player.Workers.Last() as Piece;
 
             piece1.Id.Should().NotBeEmpty();
             piece2.Id.Should().NotBeEmpty();
             piece2.Id.Should().NotBe(piece1.Id);
+        }
+
+        [Fact]
+        public void Piece_must_reject_null_land()
+        {   
+            // arrange
+            var player = new Player(_faker.Name.FirstName());
+            var piece = player.Workers.First() as Piece;
+            var land = default(Land);
+
+            // act
+            Action act = () => piece.SetLand(land);
+
+            // assert
+            act.Should().Throw<ArgumentNullException>();
         }
     }
 }

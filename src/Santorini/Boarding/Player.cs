@@ -6,17 +6,17 @@ namespace Santorini
     {
         public string Name { get; }
         
-        public Builder[] Builders { get; }
+        public Worker[] Workers { get; }
 
         internal Player(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
 
             Name = name;
-            Builders = new[]
+            Workers = new[]
             {
-                new Builder(this, 1),
-                new Builder(this, 2),
+                new Worker(this, 1),
+                new Worker(this, 2),
             };
         }
     }

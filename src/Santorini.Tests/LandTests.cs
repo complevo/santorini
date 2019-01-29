@@ -11,33 +11,33 @@ namespace Santorini.Tests
     public class LandTests
     {
         private readonly Faker _faker;
-        private readonly Board _board;
+        private readonly Island _board;
 
         public LandTests()
         {
             _faker = new Faker();
-            _board = new Board();
+            _board = new Island();
         }
 
         [Fact]
         public void Land_created_with_valid_positions()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             // act
             var land = new Land(_board, posX, posY);
 
             // assert
             land.Should().NotBeNull();
-            land.X.Should().Be(posX);
-            land.Y.Should().Be(posY);
+            land.Coord.X.Should().Be(posX);
+            land.Coord.Y.Should().Be(posY);
             land.Pieces.Should().HaveCount(0);
-            land.HasBuilder.Should().BeFalse();
-            land.HasBuilding.Should().BeFalse();
-            land.Board.Should().NotBeNull();
-            land.Board.Should().Be(_board);
+            land.HasWorker.Should().BeFalse();
+            land.HasTower.Should().BeFalse();
+            land.Island.Should().NotBeNull();
+            land.Island.Should().Be(_board);
             land.MaxLevelReached.Should().BeFalse();
         }
 
@@ -45,8 +45,8 @@ namespace Santorini.Tests
         public void Lands_with_same_positions_are_equals()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var land1 = new Land(_board, posX, posY);
             var land2 = new Land(_board, posX, posY);
@@ -62,23 +62,23 @@ namespace Santorini.Tests
         public void Land_must_accept_building_when_empty()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var land = new Land(_board, posX, posY);
 
-            var building = new Building();
+            var building = new Tower();
 
             // act
-            var hasBuildingBeforeAct = land.HasBuilding;
+            var hasBuildingBeforeAct = land.HasTower;
             var success = land.TryPutPiece(building);
 
             // assert
             success.Should().BeTrue();
             hasBuildingBeforeAct.Should().BeFalse();
-            land.HasBuilder.Should().BeFalse();
-            land.HasBuilding.Should().BeTrue();
-            land.Building.Equals(building).Should().BeTrue();
+            land.HasWorker.Should().BeFalse();
+            land.HasTower.Should().BeTrue();
+            land.Tower.Equals(building).Should().BeTrue();
             land.MaxLevelReached.Should().BeFalse();
         }
 
@@ -86,208 +86,209 @@ namespace Santorini.Tests
         public void Land_must_refuse_building_when_another_building_exists()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var land = new Land(_board, posX, posY);
 
-            var previousBuilding = new Building();
+            var previousBuilding = new Tower();
             land.TryPutPiece(previousBuilding);
 
-            var building = new Building();
+            var building = new Tower();
 
             // act
-            var hasBuildingBeforeAct = land.HasBuilding;
+            var hasBuildingBeforeAct = land.HasTower;
             var success = land.TryPutPiece(building);
 
             // assert
             success.Should().BeFalse();
             hasBuildingBeforeAct.Should().BeTrue();
-            land.HasBuilder.Should().BeFalse();
-            land.HasBuilding.Should().BeTrue();
+            land.HasWorker.Should().BeFalse();
+            land.HasTower.Should().BeTrue();
             land.Pieces.Should().HaveCount(1);
-            land.Building.Equals(previousBuilding).Should().BeTrue();
+            land.Tower.Equals(previousBuilding).Should().BeTrue();
         }
 
         [Fact]
-        public void Land_must_accept_builder_when_empty()
+        public void Land_must_accept_worker_when_empty()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var land = new Land(_board, posX, posY);
 
             var player = new Player(_faker.Name.FirstName());
-            var builder = player.Builders.First();
+            var worker = player.Workers.First();
 
             // act
-            var success = land.TryPutPiece(builder);
+            var success = land.TryPutPiece(worker);
 
             // assert
             success.Should().BeTrue();
-            land.HasBuilder.Should().BeTrue();
-            land.Builder.Equals(builder).Should().BeTrue();
-        }
+            land.HasWorker.Should().BeTrue();
+            land.Worker.Equals(worker).Should().BeTrue();
+            land.IsUnoccupied.Should().BeFalse();
+        }     
 
         [Fact]
-        public void Land_must_accept_builder_when_existing_buildind_upto_1_level_higher()
+        public void Land_must_accept_worker_when_existing_buildind_upto_1_level_higher()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var originLand = new Land(_board, posX, posY);
             var player = new Player(_faker.Name.FirstName());
-            var builder = player.Builders.First();
-            originLand.TryPutPiece(builder);
+            var worker = player.Workers.First();
+            originLand.TryPutPiece(worker);
 
-            posX = _faker.Random.Number(0, 4);
-            posY = _faker.Random.Number(0, 4);
+            posX = NewPos();
+            posY = NewPos();
 
             var destinationland = new Land(_board, posX, posY);
-            destinationland.TryPutPiece(new Building());
+            destinationland.TryPutPiece(new Tower());
 
             // act
-            var hasBuildingBeforeMove = destinationland.HasBuilding;
+            var hasBuildingBeforeMove = destinationland.HasTower;
             var landLevelBeforeMove = destinationland.LandLevel;
-            var success = destinationland.TryPutPiece(builder);
+            var success = destinationland.TryPutPiece(worker);
 
             // assert
             success.Should().BeTrue();
             hasBuildingBeforeMove.Should().BeTrue();
             landLevelBeforeMove.Should().Be(1);
-            destinationland.HasBuilder.Should().BeTrue();
-            destinationland.Builder.Equals(builder).Should().BeTrue();
+            destinationland.HasWorker.Should().BeTrue();
+            destinationland.Worker.Equals(worker).Should().BeTrue();
         }
 
         [Fact]
-        public void Land_must_refuse_builder_when_existing_buildind_more_than_1_level_higher()
+        public void Land_must_refuse_worker_when_existing_buildind_more_than_1_level_higher()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var originLand = new Land(_board, posX, posY);
             var player = new Player(_faker.Name.FirstName());
-            var builder = player.Builders.First();
-            originLand.TryPutPiece(builder);
+            var worker = player.Workers.First();
+            originLand.TryPutPiece(worker);
 
-            posX = _faker.Random.Number(0, 4);
-            posY = _faker.Random.Number(0, 4);
+            posX = NewPos();
+            posY = NewPos();
 
             var destinationland = new Land(_board, posX, posY);
-            var building = new Building();
-            building.RaiseLevel();
-            destinationland.TryPutPiece(building);
+            var tower = new Tower();
+            tower.RaiseLevel();
+            destinationland.TryPutPiece(tower);
 
             // act
-            var hasBuildingBeforeMove = destinationland.HasBuilding;
+            var hasTowerBeforeMove = destinationland.HasTower;
             var landLevelBeforeMove = destinationland.LandLevel;
-            var success = destinationland.TryPutPiece(builder);
+            var success = destinationland.TryPutPiece(worker);
 
             // assert
             success.Should().BeFalse();
-            hasBuildingBeforeMove.Should().BeTrue();
+            hasTowerBeforeMove.Should().BeTrue();
             landLevelBeforeMove.Should().Be(2);
-            destinationland.HasBuilder.Should().BeFalse();
-            destinationland.HasBuilder.Should().BeFalse();
+            destinationland.HasWorker.Should().BeFalse();
+            destinationland.HasWorker.Should().BeFalse();
         }
 
         [Fact]
-        public void Land_must_reject_builder_when_occupied_by_another_builder()
+        public void Land_must_reject_worker_when_occupied_by_another_worker()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var land = new Land(_board, posX, posY);
 
             var player = new Player(_faker.Name.FirstName());
-            var builder1 = player.Builders.First();
-            var builder2 = player.Builders.Last();
+            var worker1 = player.Workers.First();
+            var worker2 = player.Workers.Last();
 
-            land.TryPutPiece(builder1);
+            land.TryPutPiece(worker1);
 
             // act
-            var success = land.TryPutPiece(builder2);
+            var success = land.TryPutPiece(worker2);
 
             // assert
             success.Should().BeFalse();
-            land.HasBuilder.Should().BeTrue();
-            land.Builder.Equals(builder1).Should().BeTrue();
-            land.Builder.Equals(builder2).Should().BeFalse();
+            land.HasWorker.Should().BeTrue();
+            land.Worker.Equals(worker1).Should().BeTrue();
+            land.Worker.Equals(worker2).Should().BeFalse();
         }
 
         [Fact]
-        public void Land_should_allow_remove_existing_builder()
+        public void Land_should_allow_remove_existing_worker()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var land = new Land(_board, posX, posY);
 
             var player = new Player(_faker.Name.FirstName());
-            var builder = player.Builders.First();
+            var worker = player.Workers.First();
 
-            land.TryPutPiece(builder);
+            land.TryPutPiece(worker);
 
             // act
-            var hasBuilderBeforeRemove = land.HasBuilder;
-            var success = land.TryRemoveBuilder(builder);
+            var hasWorkerBeforeRemove = land.HasWorker;
+            var success = land.TryRemoveWorker(worker);
 
             // assert
             success.Should().BeTrue();
-            hasBuilderBeforeRemove.Should().BeTrue();
-            land.HasBuilder.Should().BeFalse();
+            hasWorkerBeforeRemove.Should().BeTrue();
+            land.HasWorker.Should().BeFalse();
         }
 
         [Fact]
-        public void Land_should_fail_to_remove_non_existing_builder()
+        public void Land_should_fail_to_remove_non_existing_worker()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var land = new Land(_board, posX, posY);
 
             var player = new Player(_faker.Name.FirstName());
-            var builder = player.Builders.First();
+            var worker = player.Workers.First();
 
             // act
-            var hasBuilderBeforeRemove = land.HasBuilder;
-            var success = land.TryRemoveBuilder(builder);
+            var hasWorkerBeforeRemove = land.HasWorker;
+            var success = land.TryRemoveWorker(worker);
 
             // assert
             success.Should().BeFalse();
-            hasBuilderBeforeRemove.Should().BeFalse();
-            land.HasBuilder.Should().BeFalse();
+            hasWorkerBeforeRemove.Should().BeFalse();
+            land.HasWorker.Should().BeFalse();
         }
 
         [Fact]
-        public void Land_should_fail_to_remove_different_builder()
+        public void Land_should_fail_to_remove_different_worker()
         {
             // arrange
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var player = new Player(_faker.Name.FirstName());
-            var builder1 = player.Builders.First();
-            var builder2 = player.Builders.Last();
+            var worker1 = player.Workers.First();
+            var worker2 = player.Workers.Last();
 
             var land = new Land(_board, posX, posY);
-            land.TryPutPiece(builder1);
+            land.TryPutPiece(worker1);
 
             // act
-            var hasBuilderBeforeRemove = land.HasBuilder;
-            var success = land.TryRemoveBuilder(builder2);
+            var hasWorkerBeforeRemove = land.HasWorker;
+            var success = land.TryRemoveWorker(worker2);
 
             // assert
             success.Should().BeFalse();
-            hasBuilderBeforeRemove.Should().BeTrue();
-            land.HasBuilder.Should().BeTrue();
-            land.Builder.Equals(builder1).Should().BeTrue();
+            hasWorkerBeforeRemove.Should().BeTrue();
+            land.HasWorker.Should().BeTrue();
+            land.Worker.Equals(worker1).Should().BeTrue();
         }
 
         [Fact]
@@ -308,9 +309,9 @@ namespace Santorini.Tests
         public void Land_throw_exception_with_null_board()
         {
             // arrange
-            var board = default(Board);
-            var posX = _faker.Random.Number(0, 4);
-            var posY = _faker.Random.Number(0, 4);
+            var board = default(Island);
+            var posX = NewPos();
+            var posY = NewPos();
 
             // act
             Action act = () => new Land(board, posX, posY);
@@ -323,8 +324,8 @@ namespace Santorini.Tests
         public void Land_can_be_compared()
         {
             // arrange
-            var posX = _faker.Random.Number(1, 4);
-            var posY = _faker.Random.Number(1, 4);
+            var posX = NewPos();
+            var posY = NewPos();
 
             var landA = new Land(_board, posX, posY);
             var landB = new Land(_board, posX, posY);
@@ -333,16 +334,43 @@ namespace Santorini.Tests
             var landE = default(Land);
 
             // act
-            var equalsAB = landA.Equals(landB);
-            var equalsBC = landB.Equals(landC);
-            var equalsCD = landC.Equals(landD);
-            var equalsDE = landD.Equals(landE);
+            var equalsAB_1 = landA.Equals(landB);
+            var equalsAB_2 = landA == landB;
+            var equalsAB_3 = landA.GetHashCode() == landB.GetHashCode();
+            var equalsBC_1 = landB.Equals(landC);
+            var equalsBC_2 = landB == landC;
+            var equalsCD_1 = landC.Equals(landD);
+            var equalsCD_2 = landC == landD;
+            var equalsDE_1 = landD.Equals(landE);
+            var equalsDE_2 = landD == landE;
+            var equalsA0_1 = landA == landE;
+            var equalsA0_2 = landE == landA;
+            var equals00_1 = landE == null;
+            var equals00_2 = landD.Equals(DateTime.UtcNow);
+            var equals00_3 = landA.Equals((object)DateTime.UtcNow);
+            var equals00_4 = landA.Equals((object)landB);
+            var equals00_5 = landA.Equals((object)null);
 
             // assert
-            equalsAB.Should().BeTrue();
-            equalsBC.Should().BeFalse();
-            equalsCD.Should().BeFalse();
-            equalsDE.Should().BeFalse();
+            equalsAB_1.Should().BeTrue();
+            equalsAB_2.Should().BeTrue();
+            equalsAB_3.Should().BeTrue();
+            equalsBC_1.Should().BeFalse();
+            equalsBC_2.Should().BeFalse();
+            equalsCD_1.Should().BeFalse();
+            equalsCD_2.Should().BeFalse();
+            equalsDE_1.Should().BeFalse();
+            equalsDE_2.Should().BeFalse();
+            equalsA0_1.Should().BeFalse();
+            equalsA0_2.Should().BeFalse();
+            equals00_1.Should().BeTrue();
+            equals00_2.Should().BeFalse();
+            equals00_3.Should().BeFalse();
+            equals00_4.Should().BeTrue();
+            equals00_5.Should().BeFalse();
         }
+
+        private int NewPos()
+            => _faker.Random.Number(0, 4);
     }
 }
