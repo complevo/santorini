@@ -136,7 +136,7 @@ namespace Santorini.Tests
         }
 
         [Fact]
-        public void Command_with_wrong_builder_number_is_invalid()
+        public void Command_with_wrong_worker_number_is_invalid()
         {
             // arrange
             var playerName = _faker.Name.FirstName();

@@ -1,29 +1,32 @@
 ﻿namespace Santorini
 {
-    public class Board
+    public class Island
     {
-        public Land[,] Lands { get; }
+        public readonly Land[,] Board;
 
         public static (int X, int Y) MaxPositions => (4, 4);
 
-        internal Board()
+        internal Island()
         {
-            Lands = new Land[5, 5];
+            Board = new Land[5, 5];
 
             for (var x = 0; x <= 4; x++)
                 for (var y = 0; y <= 4; y++)
-                    Lands[x, y] = new Land(this, x, y);
+                    Board[x, y] = new Land(this, x, y);
         }
 
-        public bool IsEmpty(int posX, int posY)
-            => Lands[posX, posY].IsEmpty;
+        //public bool IsEmpty(int posX, int posY)
+        //    => Board[posX, posY].IsEmpty;
+
+        public bool IsUnoccupied(int posX, int posY)
+            => Board[posX, posY].IsUnoccupied;
 
         public bool TryGetLand(int posX, int posY, out Land land)
         {
             land = default(Land);
             if (!IsValidPosition(posX, posY)) return false;
 
-            land = Lands[posX, posY];
+            land = Board[posX, posY];
 
             return true;
         }
@@ -36,15 +39,15 @@
             return false;
         }    
 
-        public Builder GetBuilder(string playerName, int builderNumber)
+        public Worker GetWorker(string playerName, int workerNumber)
         {
-            foreach (var land in Lands)
-                if (land.HasBuilder 
-                    && land.Builder.Player.Name == playerName 
-                    && land.Builder.Number == builderNumber)
-                    return land.Builder;
+            foreach (var land in Board)
+                if (land.HasWorker 
+                    && land.Worker.Player.Name == playerName 
+                    && land.Worker.Number == workerNumber)
+                    return land.Worker;
             return null;
-        }      
+        }
 
         public static bool IsValidPosition(int posX, int posY)
             => posX >= 0 && posY >= 0
