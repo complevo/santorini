@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Santorini
 {
-    [DebuggerDisplay("[{Coord.X},{Coord.Y}], IsUnoccupied:{IsUnoccupied}, HasTower:{HasTower}, HasWorker:{HasWorker}")]
+    [DebuggerDisplay("[{Coord.X} ,{Coord.Y}], Unoccupied: {IsUnoccupied}, Tower: {HasTower}, Worker: {HasWorker}, Level: {LandLevel}")]
     public class Land : IEquatable<Land>
     {
         public readonly Coord Coord;

@@ -17,20 +17,20 @@ namespace Santorini.Host
             _client = clientFactory.Get(_settings.MoveEndpoint);
         }
 
-        public Task<PlaceWorkersCommand> PlaceWorkersRequestAsync(Match match)
+        public Task<PlaceWorkersCommand> PlaceWorkersRequestAsync(Game game)
             => _client
                 .Request(_settings.AddWorkerEndpoint)
-                .PostJsonAsync(match)
+                .PostJsonAsync(game)
                 .ReceiveJson<PlaceWorkersCommand>();
 
 
-        public Task<MoveCommand> MoveRequest(Match match)
+        public Task<MoveCommand> MoveRequest(Game game)
             => _client
                 .Request(_settings.MoveEndpoint)
-                .PostJsonAsync(match)
+                .PostJsonAsync(game)
                 .ReceiveJson<MoveCommand>();
 
-        public Task ReportMatch(Match match)
+        public Task ReportMatch(Game match)
             => _client
                 .Request(_settings.GameReportEndpoint)
                 .PostJsonAsync(match);

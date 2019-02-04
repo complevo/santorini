@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Santorini.Tests")]
 namespace Santorini
 {
-    public class Match
+    public class Game
     {
         public Island Island { get; }
 
@@ -15,6 +15,8 @@ namespace Santorini
 
         private List<MoveCommand> _movesHistory;
         public IReadOnlyCollection<MoveCommand> MovesHistory => _movesHistory;
+
+        public Player Winner { get; private set; }
 
         public IEnumerable<Worker> Workers
         {
@@ -26,13 +28,15 @@ namespace Santorini
             }
         }
 
-        public bool GameIsOver { get; private set; }
+        public bool GameIsOver
+            => Winner != null;
 
-        public Match()
+        public Game()
         {
             Island = new Island();
             _players = new List<Player>();
             _movesHistory = new List<MoveCommand>();
+            Winner = default;
         }
 
         public bool TryAddPlayer(string name)
@@ -72,13 +76,20 @@ namespace Santorini
             var worker = Island.GetWorker(command.PlayerName, command.WorkerNumber);
             if (worker is null) return false;
 
-            var success = worker.TryMoveTo(command.MoveTo.X, command.MoveTo.Y)
-                && (command.BuildAt != null && worker.TryBuildAt(command.BuildAt.X, command.BuildAt.Y));
+            var success = worker.TryMoveTo(command.MoveTo.X, command.MoveTo.Y);
+
+            if (success && worker.LandLevel == 3)
+            {
+                Winner = worker.Player;
+                _movesHistory.Add(command);
+
+                return true;
+            }
+
+            success = worker.TryBuildAt(command.BuildAt.X, command.BuildAt.Y);
 
             if (success)            
                 _movesHistory.Add(command);
-
-            AssertGameIsOver();
 
             return success;
         }
@@ -107,20 +118,6 @@ namespace Santorini
             }
 
             return false;
-        }
-
-        private void AssertGameIsOver()
-        {
-            if (GameIsOver) return;
-
-            foreach (var land in Island.Board)
-            {
-                if (land.HasWorker && land.HasTower && land.Tower.Level == 3)
-                {
-                    GameIsOver = true;
-                    return;
-                }
-            }
         }
     }
 }
