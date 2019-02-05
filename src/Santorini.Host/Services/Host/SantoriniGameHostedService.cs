@@ -5,27 +5,31 @@ using Microsoft.Extensions.Logging;
 
 namespace Santorini.Host
 {
-    #region snippet1
-    internal class LifetimeEventsHostedService : IHostedService
+    internal class SantoriniGameHostedService : IHostedService
     {
         private readonly ILogger _logger;
-        private readonly IApplicationLifetime _appLifetime;
+        private readonly IGameService _gameService;
 
-        public LifetimeEventsHostedService(
-            ILogger<LifetimeEventsHostedService> logger, 
-            IApplicationLifetime appLifetime)
+        public SantoriniGameHostedService(
+            ILogger<SantoriniGameHostedService> logger,
+            IGameService gameService)
         {
             _logger = logger;
-            _appLifetime = appLifetime;
+            _gameService = gameService;
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            _appLifetime.ApplicationStarted.Register(OnStarted);
-            _appLifetime.ApplicationStopping.Register(OnStopping);
-            _appLifetime.ApplicationStopped.Register(OnStopped);
+            _logger.LogInformation("Registering players");
+            _gameService.RegisterPlayers();
 
-            return Task.CompletedTask;
+            _logger.LogInformation("Placing workers");
+            await _gameService.PlaceWorkers();
+
+            _logger.LogInformation("Ready? Steady! Go!");
+            await _gameService.StartGame();
+
+            _logger.LogInformation("Game is over!", _gameService.GetGameReport());
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -38,6 +42,8 @@ namespace Santorini.Host
             _logger.LogInformation("OnStarted has been called.");
 
             // Perform post-startup activities here
+
+            
         }
 
         private void OnStopping()
@@ -54,5 +60,4 @@ namespace Santorini.Host
             // Perform post-stopped activities here
         }
     }
-    #endregion
 }

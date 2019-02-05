@@ -4,6 +4,8 @@ namespace Santorini.Host
 {
     public class GameSettings
     {
+        public static string Section = nameof(GameSettings);
+
         public PlayerSettings BluePlayer { get; set; }
         public PlayerSettings WhitePlayer { get; set; }
         public GameOutputFormat OutputFormat { get; set; }

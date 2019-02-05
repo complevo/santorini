@@ -4,7 +4,7 @@ using Flurl.Http.Configuration;
 
 namespace Santorini.Host
 {
-    public class GameService
+    public class GameService : IGameService
     {
         private readonly Game _game;
         private readonly GameSettings _settings;
@@ -93,6 +93,14 @@ namespace Santorini.Host
                     ? PlayerTwo
                     : PlayerOne;
             }
+        }
+
+        public Game GetGameReport()
+        {
+            if(_game.GameIsOver)
+                return _game;
+
+            return null;
         }
     }
 }

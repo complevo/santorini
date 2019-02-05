@@ -22,18 +22,20 @@ namespace Santorini.Host
                 })
                 .ConfigureAppConfiguration((hostContext, configApp) =>
                 {
-                    configApp.AddJsonFile("appsettings.json", optional: true);
-                    configApp.AddJsonFile(
-                        $"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json",
-                        optional: true);
-                    configApp.AddEnvironmentVariables(prefix: "PREFIX_");
-                    configApp.AddCommandLine(args);
+                    configApp.AddJsonFile("appsettings.json", optional: true)
+                        .AddJsonFile(
+                            $"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json",
+                            optional: true)
+                        .AddEnvironmentVariables(prefix: "PREFIX_")
+                        .AddCommandLine(args);
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services
-                        .AddHostedService<LifetimeEventsHostedService>()
-                        .AddSingleton<IFlurlClientFactory, PerHostFlurlClientFactory>();
+                        .AddHostedService<SantoriniGameHostedService>()
+                        .AddSingleton<IFlurlClientFactory, PerHostFlurlClientFactory>()
+                        .AddSingleton<IGameService, GameService>()
+                        .Configure<GameSettings>(GameSettings.Section, hostContext.Configuration);
                 })
                 .ConfigureLogging((hostContext, configLogging) =>
                 {
