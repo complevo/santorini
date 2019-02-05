@@ -324,8 +324,8 @@ namespace Santorini.Tests
         public void Land_can_be_compared()
         {
             // arrange
-            var posX = NewPos();
-            var posY = NewPos();
+            var posX = _faker.Random.Number(1, 4);
+            var posY = _faker.Random.Number(1, 4);
 
             var landA = new Land(_board, posX, posY);
             var landB = new Land(_board, posX, posY);
