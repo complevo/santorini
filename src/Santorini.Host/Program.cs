@@ -15,17 +15,17 @@ namespace Santorini.Host
             var host = new HostBuilder()
                 .ConfigureHostConfiguration(configHost =>
                 {
-                    configHost.SetBasePath(Directory.GetCurrentDirectory());
-                    configHost.AddJsonFile("hostsettings.json", optional: true);
-                    configHost.AddEnvironmentVariables(prefix: "PREFIX_");
-                    configHost.AddCommandLine(args);
+                    configHost
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("hostsettings.json", optional: true)
+                        .AddEnvironmentVariables(prefix: "PREFIX_")
+                        .AddCommandLine(args);
                 })
                 .ConfigureAppConfiguration((hostContext, configApp) =>
                 {
-                    configApp.AddJsonFile("appsettings.json", optional: true)
-                        .AddJsonFile(
-                            $"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json",
-                            optional: true)
+                    configApp
+                        .AddJsonFile("appsettings.json", optional: true)
+                        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true)
                         .AddEnvironmentVariables(prefix: "PREFIX_")
                         .AddCommandLine(args);
                 })
@@ -35,12 +35,13 @@ namespace Santorini.Host
                         .AddHostedService<SantoriniGameHostedService>()
                         .AddSingleton<IFlurlClientFactory, PerHostFlurlClientFactory>()
                         .AddSingleton<IGameService, GameService>()
-                        .Configure<GameSettings>(GameSettings.Section, hostContext.Configuration);
+                        .Configure<GameSettings>(hostContext.Configuration.GetSection(GameSettings.Section));
                 })
                 .ConfigureLogging((hostContext, configLogging) =>
                 {
-                    configLogging.AddConsole();
-                    configLogging.AddDebug();
+                    configLogging
+                        .AddConsole()
+                        .AddDebug();
                 })
                 .UseConsoleLifetime()
                 .Build();

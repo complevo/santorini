@@ -14,7 +14,7 @@ namespace Santorini.Host
         public PlayerInstance(PlayerSettings settings, IFlurlClientFactory clientFactory)
         {
             _settings = settings;
-            _client = clientFactory.Get(_settings.MoveEndpoint);
+            _client = clientFactory.Get(_settings.BaseUrl);
         }
 
         public Task<PlaceWorkersCommand> PlaceWorkersRequestAsync(Game game)
