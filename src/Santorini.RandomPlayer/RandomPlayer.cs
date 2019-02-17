@@ -36,8 +36,8 @@ namespace Santorini.RandomPlayer
                     island.IsUnoccupied(c.X, c.Y) &&
                     island.Board[c.X, c.Y].LandLevel - worker.LandLevel > 2 &&
                     island.Board[c.X, c.Y].LandLevel != 4)
+                .OrderByDescending(c => island.Board[c.X, c.Y].LandLevel)
                 .ToList();
-            Shuffle(unoccupiedMoveDirections);
             foreach (Coord moveCoord in unoccupiedMoveDirections)
             {
                 List<Coord> unoccupiedBuildDirections = GetPossibleNeighbours(moveCoord)
@@ -72,19 +72,6 @@ namespace Santorini.RandomPlayer
                     from accseq in accumulator
                     from item in sequence
                     select accseq.Concat(new[] { item }));
-        }
-
-        public static void Shuffle<T>(IList<T> list)
-        {
-            int n = list.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = _random.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
         }
     }
 }
