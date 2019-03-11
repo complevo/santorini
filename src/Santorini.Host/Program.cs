@@ -41,7 +41,8 @@ namespace Santorini.Host
                 {
                     configLogging
                         .AddConsole()
-                        .AddDebug();
+                        .AddDebug()
+                        .SetMinimumLevel(LogLevel.Debug);
                 })
                 .UseConsoleLifetime()
                 .Build();

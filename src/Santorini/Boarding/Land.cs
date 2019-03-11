@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace Santorini
 {
@@ -13,6 +14,7 @@ namespace Santorini
         private readonly List<Piece> _pieces;
         public Piece[] Pieces => _pieces.ToArray();
 
+        [IgnoreDataMember]
         public Island Island { get; }
 
         internal Land(Island island, int x, int y)

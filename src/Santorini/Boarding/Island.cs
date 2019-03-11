@@ -15,9 +15,6 @@
                     Board[x, y] = new Land(this, x, y);
         }
 
-        //public bool IsEmpty(int posX, int posY)
-        //    => Board[posX, posY].IsEmpty;
-
         public bool IsUnoccupied(int posX, int posY)
             => Board[posX, posY].IsUnoccupied;
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28705.295
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Santorini", "src\Santorini\Santorini.csproj", "{FF49E1D5-A374-474E-8F35-2B6CF4E9EB1B}"
 EndProject
@@ -18,7 +18,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Santorini.RandomPlayer", "src\Santorini.RandomPlayer\Santorini.RandomPlayer.csproj", "{66FCE054-4B95-4D52-99D7-26AE0F5B4A4E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Players", "Players", "{E2475821-5C2B-4085-907A-03CC8C2FD7F5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Santorini.Players.Host", "src\Santorini.Players.Host\Santorini.Players.Host.csproj", "{1E0A88BD-97A6-40FF-8DCF-7901B2BDE0BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Santorini.Players.Dummy", "src\Santorini.Players.Dummy\Santorini.Players.Dummy.csproj", "{BB13D948-310C-40E8-9644-92A87A99CCA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,16 +42,22 @@ Global
 		{28497CDE-6FE6-4130-BF7F-8AD25423477F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28497CDE-6FE6-4130-BF7F-8AD25423477F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28497CDE-6FE6-4130-BF7F-8AD25423477F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66FCE054-4B95-4D52-99D7-26AE0F5B4A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66FCE054-4B95-4D52-99D7-26AE0F5B4A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66FCE054-4B95-4D52-99D7-26AE0F5B4A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66FCE054-4B95-4D52-99D7-26AE0F5B4A4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E0A88BD-97A6-40FF-8DCF-7901B2BDE0BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E0A88BD-97A6-40FF-8DCF-7901B2BDE0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E0A88BD-97A6-40FF-8DCF-7901B2BDE0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E0A88BD-97A6-40FF-8DCF-7901B2BDE0BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB13D948-310C-40E8-9644-92A87A99CCA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB13D948-310C-40E8-9644-92A87A99CCA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB13D948-310C-40E8-9644-92A87A99CCA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB13D948-310C-40E8-9644-92A87A99CCA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EBEAF5BA-028F-4C67-A8E9-10EF1F514C41} = {704D31D4-1474-45C8-A7D3-214C44BCED18}
+		{1E0A88BD-97A6-40FF-8DCF-7901B2BDE0BE} = {E2475821-5C2B-4085-907A-03CC8C2FD7F5}
+		{BB13D948-310C-40E8-9644-92A87A99CCA6} = {E2475821-5C2B-4085-907A-03CC8C2FD7F5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FD68B978-C9A0-485C-AA65-2D03CE93A7C2}

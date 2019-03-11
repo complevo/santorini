@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Santorini
 {
@@ -13,6 +14,7 @@ namespace Santorini
             Y = y;
         }
 
+        [IgnoreDataMember]
         public bool IsValid
             => Island.IsValidPosition(X, Y);
         

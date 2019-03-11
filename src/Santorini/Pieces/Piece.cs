@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Santorini
 {
     public abstract class Piece
     {
         public Guid Id { get; }
+
+        [IgnoreDataMember]
         public Land CurrentLand { get; private set; }
 
         protected Piece()

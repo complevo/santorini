@@ -36,8 +36,8 @@ namespace Santorini.Host
 
         public void RegisterPlayers()
         {
-            var bluePlayer = new PlayerInstance(_settings.BluePlayer, _clientFactory);
-            var whitePlayer = new PlayerInstance(_settings.WhitePlayer, _clientFactory);
+            var bluePlayer = new PlayerInstance(_settings.BluePlayer, _clientFactory, _logger);
+            var whitePlayer = new PlayerInstance(_settings.WhitePlayer, _clientFactory, _logger);
 
             var bluePlayerOk = _game.TryAddPlayer(_settings.BluePlayer.Name);
             if (!bluePlayerOk) throw new AddPlayerException(_settings.BluePlayer.Name);

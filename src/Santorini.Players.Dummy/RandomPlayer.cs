@@ -1,13 +1,19 @@
-﻿using System;
+﻿using Bogus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Santorini.RandomPlayer
+namespace Santorini.Players
 {
     public class RandomPlayer
     {
-        private const string PLAYER_NAME = "Randomizer";
-        private static readonly Random _random = new Random();
+        private readonly string PLAYER_NAME;
+        private readonly Random _random = new Random();
+
+        public RandomPlayer()
+        {
+            PLAYER_NAME = new Faker().Name.FirstName();
+        }
 
         public string GetPlayerName()
         {

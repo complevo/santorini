@@ -2,6 +2,7 @@
 using System.Linq;
 using Bogus;
 using FluentAssertions;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Santorini.Tests
@@ -350,6 +351,41 @@ namespace Santorini.Tests
             success.Should().BeTrue();
             game.GameIsOver.Should().BeTrue();
             game.Winner.Name.Should().Be(player1Name);
+        }
+
+        [Fact]
+        public void Game_can_be_serialized()
+        {
+            // arrange
+            var game = new Game();
+
+            var white = _faker.Name.FirstName();
+            var blue = _faker.Name.FirstName();
+            game.TryAddPlayer(white);
+            game.TryAddPlayer(blue);
+            game.TryAddWorker(white, 1, 0, 0);
+            game.TryAddWorker(white, 2, 1, 0);
+            game.TryAddWorker(blue, 1, 4, 4);
+            game.TryAddWorker(blue, 1, 4, 3);
+
+            // act
+            var json = JsonConvert.SerializeObject(game);
+
+            // assert
+            json.Should().NotBeNullOrEmpty();
+        }
+
+        [Fact]
+        public void Game_can_be_deserialized()
+        {
+            // arrange
+            var json = "{\"Island\":{\"Board\":[[{\"Coord\":{\"X\":0,\"Y\":0},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":0,\"Y\":1},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":0,\"Y\":2},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":0,\"Y\":3},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":0,\"Y\":4},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false}],[{\"Coord\":{\"X\":1,\"Y\":0},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":1,\"Y\":1},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":1,\"Y\":2},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":1,\"Y\":3},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":1,\"Y\":4},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false}],[{\"Coord\":{\"X\":2,\"Y\":0},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":2,\"Y\":1},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":2,\"Y\":2},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":2,\"Y\":3},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":2,\"Y\":4},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false}],[{\"Coord\":{\"X\":3,\"Y\":0},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":3,\"Y\":1},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":3,\"Y\":2},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":3,\"Y\":3},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":3,\"Y\":4},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false}],[{\"Coord\":{\"X\":4,\"Y\":0},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":4,\"Y\":1},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":4,\"Y\":2},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":4,\"Y\":3},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false},{\"Coord\":{\"X\":4,\"Y\":4},\"Pieces\":[],\"IsUnoccupied\":true,\"HasTower\":false,\"Tower\":null,\"HasWorker\":false,\"Worker\":null,\"LandLevel\":0,\"MaxLevelReached\":false}]]},\"Players\":[{\"Name\":\"Blue\",\"Workers\":[{\"Number\":1,\"LandLevel\":-1,\"Id\":\"5e12c232-bdca-4212-8078-d9643aa9b999\",\"IsPlaced\":false},{\"Number\":2,\"LandLevel\":-1,\"Id\":\"09862cb1-a1ac-41f5-bad2-2b11eda94c31\",\"IsPlaced\":false}]},{\"Name\":\"White\",\"Workers\":[{\"Number\":1,\"LandLevel\":-1,\"Id\":\"7181e4e4-7593-4ae2-84c0-f100f385df57\",\"IsPlaced\":false},{\"Number\":2,\"LandLevel\":-1,\"Id\":\"5b53890a-ae44-4b08-a61c-5841f0fedee0\",\"IsPlaced\":false}]}],\"MovesHistory\":[],\"Winner\":null,\"Workers\":[],\"GameIsOver\":false}";
+
+            // act
+            var game = JsonConvert.DeserializeObject<Game>(json);
+
+            // assert
+            game.Should().NotBeNull();
         }
 
         private Coord GetEmptyCoord(Game game)

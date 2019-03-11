@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Santorini
 {
     public class Worker : Piece, IEquatable<Worker>
     {
+        [IgnoreDataMember]
         public Player Player { get; }
         public int Number { get; set; }        
 
