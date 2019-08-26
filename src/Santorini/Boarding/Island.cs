@@ -1,4 +1,6 @@
-﻿namespace Santorini
+﻿using System.Collections.Generic;
+
+namespace Santorini
 {
     public class Island
     {
@@ -44,6 +46,16 @@
                     && land.Worker.Number == workerNumber)
                     return land.Worker;
             return null;
+        }
+
+        public IEnumerable<Worker> GetAllWorkers()
+        {
+            List<Worker> allWorkers = new List<Worker>();
+            foreach (var land in Board)
+                if (land.HasWorker)
+                    allWorkers.Add(land.Worker);
+
+            return allWorkers;
         }
 
         public static bool IsValidPosition(int posX, int posY)

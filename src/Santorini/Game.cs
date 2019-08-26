@@ -8,7 +8,7 @@ namespace Santorini
 {
     public class Game
     {
-        public Island Island { get; }
+        public Island Island { get; set; }
 
         private List<Player> _players;
         public IReadOnlyCollection<Player> Players => _players;

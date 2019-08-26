@@ -17,6 +17,8 @@ namespace Santorini
         [IgnoreDataMember]
         public Island Island { get; }
 
+        public bool IsLand { get; }
+
         internal Land(Island island, int x, int y)
         {
             if (!Island.IsValidPosition(x, y))
@@ -26,6 +28,7 @@ namespace Santorini
                 throw new ArgumentNullException(nameof(island));
 
             Island = island;
+            IsLand = true;
             Coord = new Coord(x, y);
             _pieces = new List<Piece>();
         }

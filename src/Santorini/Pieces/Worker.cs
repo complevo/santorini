@@ -49,7 +49,7 @@ namespace Santorini
         public int LandLevel
             => CurrentLand?.LandLevel ?? -1;
 
-        private bool CanMoveTo(int posX, int posY, out Land land)
+        public bool CanMoveTo(int posX, int posY, out Land land)
         {
             land = default(Land);
 
@@ -80,7 +80,7 @@ namespace Santorini
             return levelDiff > 1;
         }
 
-        private bool IsSteppingUp(Land from, Land to)
+        public bool IsSteppingUp(Land from, Land to)
             => to.LandLevel > from.LandLevel;
 
         private bool IsMovingMoreThan2StepsAway(Land from, Land to)
