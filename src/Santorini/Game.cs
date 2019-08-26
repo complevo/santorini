@@ -94,6 +94,27 @@ namespace Santorini
             return success;
         }
 
+        public bool TryUndoCommand(MoveCommand command, Coord from)
+        {
+            var worker = Island.GetWorker(command.PlayerName, command.WorkerNumber);
+
+            Island.TryGetLand(command.MoveTo.X, command.MoveTo.Y, out Land movedTo);
+            Island.TryGetLand(from.X, from.Y, out Land movedFrom);
+
+            Island.TryGetLand(command.BuildAt.X, command.BuildAt.Y, out Land builtAt);
+
+            if (builtAt.LandLevel == 1)
+                builtAt.RemovePiece(builtAt.Tower);
+            else
+                builtAt.Tower.DecreaseLevel();
+
+            movedTo.RemovePiece(worker);
+            movedFrom.TryPutPiece(worker);
+
+            return true;
+
+        }
+
         private bool IsMoveCommandAllowed(MoveCommand command)
         {
             // is command a valid one

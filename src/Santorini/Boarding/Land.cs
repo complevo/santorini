@@ -54,6 +54,12 @@ namespace Santorini
             return true;
         }
 
+        public bool RemovePiece(Piece piece)
+        {
+            _pieces.Remove(piece);
+            return true;
+        }
+
         public bool TryRemoveWorker(Worker worker)
         {
             if(!HasWorker) return false;

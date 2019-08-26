@@ -15,6 +15,12 @@
             return Level;
         }
 
+        public int DecreaseLevel()
+        {
+            if (Level > 1) Level--;
+            return Level;
+        }
+
         public bool IsComplete
             => Level >= 4;
     }
